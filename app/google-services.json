@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "45386380569",
+    "firebase_url": "https://lovetalk-938e3.firebaseio.com",
+    "project_id": "lovetalk-938e3",
+    "storage_bucket": "lovetalk-938e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45386380569:android:ed20b72a49d9241eb74188",
+        "android_client_info": {
+          "package_name": "com.example.lovetalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45386380569-d87o0aq852muelu30jabg44sr3siab5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lovetalk",
+            "certificate_hash": "26cdda69475509a7eb8d5835ee587ff62d6295d2"
+          }
+        },
+        {
+          "client_id": "45386380569-3ddi05hcfkkkl07h6vt88ct8so7m1r18.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeaNX-NUd61L8jA3EBX1RVUIKjXRJwN_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45386380569-3ddi05hcfkkkl07h6vt88ct8so7m1r18.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
