@@ -1,11 +1,20 @@
 package com.example.lovetalk.user_all_recycle;
 
 public class UserObject {
-    private String name,phone_number;
+    private String name,phone_number,uid;
 
-    public UserObject(String name, String phone_number) {
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public UserObject(String name, String phone_number, String uid) {
         this.name = name;
         this.phone_number = phone_number;
+        this.uid = uid;
     }
 
     public String getName() {
