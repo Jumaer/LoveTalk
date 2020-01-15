@@ -1,12 +1,24 @@
 package com.example.lovetalk.chat;
 
+import java.util.ArrayList;
+
 public class MessageObject {
     private String messageId,senderId,message;
+    ArrayList<String>mediaUrlList;
 
-    public MessageObject(String messageId, String senderId, String message) {
+    public MessageObject(String messageId, String senderId, String message, ArrayList<String>mediaUrlList) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;
+        this.mediaUrlList = mediaUrlList;
+    }
+
+    public ArrayList<String> getMediaUrlList() {
+        return mediaUrlList;
+    }
+
+    public void setMediaUrlList(ArrayList<String> mediaUrlList) {
+        this.mediaUrlList = mediaUrlList;
     }
 
     public String getMessageId() {
