@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,10 +44,18 @@ public class ChatActivity extends AppCompatActivity {
         chatID = getIntent().getExtras().getString("chatID");
         mChatdb =  FirebaseDatabase.getInstance().getReference().child("chat").child(chatID);
         Button  msend = findViewById(R.id.send);
+        Button maddMedia = findViewById(R.id.add_media);
         msend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
+            }
+        });
+
+        maddMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
             }
         });
         initializeRecyclerView();
@@ -100,6 +109,7 @@ public class ChatActivity extends AppCompatActivity {
          }
      });
     }
+
     private void initializeRecyclerView(){
         messageList = new ArrayList<>();
         mChat = findViewById(R.id.recycle_message);
@@ -109,6 +119,34 @@ public class ChatActivity extends AppCompatActivity {
         mChat.setLayoutManager(mChatLayoutManager);
         mChatAdapter = new MessageAdapter(messageList);
         mChat.setAdapter(mChatAdapter);
+    }
+    int PICK_IMAGE_INTENT = 1;
+    ArrayList<String>mediaUriList = new ArrayList<>();
+    private void openGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent .putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture(s)"),PICK_IMAGE_INTENT);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==RESULT_OK){
+            if(requestCode== PICK_IMAGE_INTENT){
+                if(data.getClipData()==null){
+                    mediaUriList.add(data.getData().toString());
+                }
+                else {
+                    for (int i = 0;i<data.getClipData().getItemCount();i++){
+                        mediaUriList.add(data.getClipData().getItemAt(i).getUri().toString());
+                    }
+                }
+            }
+        }
     }
 
     private void sendMessage(){

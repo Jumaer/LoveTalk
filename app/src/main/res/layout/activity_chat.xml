@@ -17,23 +17,49 @@
     <LinearLayout
         android:id="@+id/send_layout"
         android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
+
        android:padding="2dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-<EditText
-    android:layout_weight="0.8"
-    android:hint="message..."
-    android:id="@+id/message_write"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"/>
-        <Button
-            android:id="@+id/send"
-            android:layout_weight="0.2"
-            android:layout_width="0dp"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/media_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_weight="0.8"
+                android:hint="message..."
+                android:id="@+id/message_write"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:text="Add Media"
+                android:id="@+id/add_media"
+                android:layout_weight="0.2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                android:text="Send"
+                android:id="@+id/send"
+                android:layout_weight="0.2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </RelativeLayout>
