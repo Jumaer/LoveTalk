@@ -6,9 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
 <androidx.recyclerview.widget.RecyclerView
+    android:layout_margin="5dp"
+    android:layout_above="@+id/send_layout"
     android:id="@+id/recycle_message"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
 </androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/send_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+       android:padding="2dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+<EditText
+    android:layout_weight="0.8"
+    android:hint="message..."
+    android:id="@+id/message_write"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/send"
+            android:layout_weight="0.2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 </RelativeLayout>
