@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.lovetalk.chat.MediaAdapter;
 import com.example.lovetalk.chat.MessageAdapter;
 import com.example.lovetalk.chat.ChatObject;
 import com.example.lovetalk.chat.MessageObject;
@@ -28,9 +29,9 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private RecyclerView mChat;
-    private RecyclerView.Adapter mChatAdapter;
-    private RecyclerView.LayoutManager mChatLayoutManager;
+    private RecyclerView mChat,mMedia;
+    private RecyclerView.Adapter mChatAdapter,mMediaAdapter;
+    private RecyclerView.LayoutManager mChatLayoutManager,mMediaLayoutManager;
     ArrayList<MessageObject> messageList;
 
 
@@ -58,7 +59,8 @@ public class ChatActivity extends AppCompatActivity {
                 openGallery();
             }
         });
-        initializeRecyclerView();
+        initializeMessage();
+        initializeMedia();
         getChatMessages();
     }
     private void getChatMessages(){
@@ -110,7 +112,7 @@ public class ChatActivity extends AppCompatActivity {
      });
     }
 
-    private void initializeRecyclerView(){
+    private void initializeMessage(){
         messageList = new ArrayList<>();
         mChat = findViewById(R.id.recycle_message);
         mChat.setNestedScrollingEnabled(false);
@@ -120,8 +122,23 @@ public class ChatActivity extends AppCompatActivity {
         mChatAdapter = new MessageAdapter(messageList);
         mChat.setAdapter(mChatAdapter);
     }
+
+
+
     int PICK_IMAGE_INTENT = 1;
     ArrayList<String>mediaUriList = new ArrayList<>();
+
+    private void initializeMedia(){
+        messageList = new ArrayList<>();
+        mMedia = findViewById(R.id.media_list);
+        mMedia.setNestedScrollingEnabled(false);
+        mMedia.setHasFixedSize(true);
+        mMediaLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
+        mMedia.setLayoutManager(mMediaLayoutManager);
+        mChatAdapter = new MediaAdapter(mediaUriList,getApplicationContext());
+        mMedia.setAdapter(mMediaAdapter);
+    }
+
     private void openGallery(){
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -145,6 +162,8 @@ public class ChatActivity extends AppCompatActivity {
                         mediaUriList.add(data.getClipData().getItemAt(i).getUri().toString());
                     }
                 }
+
+                mMediaAdapter.notifyDataSetChanged();
             }
         }
     }
