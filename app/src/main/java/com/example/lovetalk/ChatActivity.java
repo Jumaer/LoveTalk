@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +17,16 @@ import com.example.lovetalk.chat.MediaAdapter;
 import com.example.lovetalk.chat.MessageAdapter;
 import com.example.lovetalk.chat.ChatObject;
 import com.example.lovetalk.chat.MessageObject;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,17 +116,7 @@ public class ChatActivity extends AppCompatActivity {
          }
      });
     }
-
-    private void initializeMessage(){
-        messageList = new ArrayList<>();
-        mChat = findViewById(R.id.recycle_message);
-        mChat.setNestedScrollingEnabled(false);
-        mChat.setHasFixedSize(true);
-        mChatLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
-        mChat.setLayoutManager(mChatLayoutManager);
-        mChatAdapter = new MessageAdapter(messageList);
-        mChat.setAdapter(mChatAdapter);
-    }
+    EditText mMessage;
 
 
 
@@ -129,7 +124,7 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<String>mediaUriList = new ArrayList<>();
 
     private void initializeMedia(){
-        messageList = new ArrayList<>();
+        mediaUriList = new ArrayList<>();
         mMedia = findViewById(R.id.media_list);
         mMedia.setNestedScrollingEnabled(false);
         mMedia.setHasFixedSize(true);
@@ -167,18 +162,74 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
-
+    int totalMediaUploaded = 0;
+    ArrayList<String>mediaIDlist= new ArrayList<>();
     private void sendMessage(){
-        EditText mMessage = findViewById(R.id.message_write);
+         mMessage = findViewById(R.id.message_write);
         if(!mMessage.getText().toString().isEmpty()){
-            DatabaseReference newMessageDB = mChatdb.push();
+            String messageID= mChatdb.push().getKey();
+            final DatabaseReference newMessageDB = mChatdb.child(messageID);
 
-            Map newMessageMap = new HashMap<>();
-            newMessageMap.put("text",mMessage.getText().toString());
+           final Map newMessageMap = new HashMap<>();
+
             newMessageMap.put("creator", FirebaseAuth.getInstance().getUid());
 
-            newMessageDB.updateChildren(newMessageMap);
+            if(!mMessage.getText().toString().isEmpty())
+                     newMessageMap.put("text",mMessage.getText().toString());
+
+        //    newMessageDB.updateChildren(newMessageMap);
+
+
+            if(!mediaUriList.isEmpty()){
+                  for(String mediaUri : mediaUriList){
+                      String mediaId= newMessageDB.child("media").push().getKey();
+                      mediaIDlist.add(mediaId);
+                      final StorageReference filePath = FirebaseStorage.getInstance().getReference().
+                              child("chat").child(chatID).child(mediaId).child(mediaId);
+
+                      UploadTask uploadTask = filePath.putFile(Uri.parse(mediaUri));
+                      uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                          @Override
+                          public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                               newMessageMap.put("/media/"+ mediaIDlist.get( totalMediaUploaded) + "/",uri.toString());
+                               totalMediaUploaded++;
+                               if(totalMediaUploaded== mediaUriList.size()){
+                                       updateReferenceWithNewMessae(newMessageDB,newMessageMap);
+                               }
+                                }
+                            });
+                          }
+                      });
+                  }
+            }
+            else {
+                if(!mMessage.getText().toString().isEmpty())
+                    updateReferenceWithNewMessae(newMessageDB,newMessageMap);
+
+            }
         }
-        mMessage.setText(null);
+
     }
+    private  void updateReferenceWithNewMessae(DatabaseReference newMessageDB , Map newMessageMap){
+        newMessageDB.updateChildren(newMessageMap);
+        mMessage.setText(null);
+        mediaUriList.clear();
+        mediaIDlist.clear();
+        mMediaAdapter.notifyDataSetChanged();
+    }
+    private void initializeMessage(){
+        messageList = new ArrayList<>();
+        mChat = findViewById(R.id.recycle_message);
+        mChat.setNestedScrollingEnabled(false);
+        mChat.setHasFixedSize(true);
+        mChatLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        mChat.setLayoutManager(mChatLayoutManager);
+        mChatAdapter = new MessageAdapter(messageList);
+        mChat.setAdapter(mChatAdapter);
+    }
+
+
 }
